@@ -7,7 +7,8 @@
 
 Cost-optimal management of solar panels, a battery and a fuel generator over one week, computed by
 stochastic optimal control. The page shows simulated weeks hour by hour, compares three strategies
-and displays the optimal decision rule and the value function.
+and displays the optimal decision rule and the value function. The tank size (20 l benchmark, up to
+100 l) and the penalty for unserved demand can be changed to see their effect on the control.
 
 Paper: P. H. Takam and N. Fruiba, *Stochastic Optimal Control for the Cost-Optimal Management of a
 Standalone Microgrid*. Preprint (earlier title): [arXiv:2511.00167](https://arxiv.org/abs/2511.00167).
