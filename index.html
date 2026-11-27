@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Standalone Microgrid — Live Demo</title>
+<meta name="description" content="Islanded microgrid with one tank of fuel: watch solar panels, battery and generator under cost-optimal control. By Paul Honore Takam and Nathalie Fruiba.">
+<meta name="author" content="Paul Honore Takam, Nathalie Fruiba">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Standalone microgrid: one tank of fuel (live demo)">
+<meta property="og:description" content="No power grid, no refuelling: cost-optimal management of an islanded microgrid. By Paul Honore Takam and Nathalie Fruiba.">
+<meta property="og:url" content="https://paulhonore.github.io/standalone-microgrid-demo/">
 <style>
 :root{--bg:#f6f7f9;--card:#fff;--ink:#17202a;--mut:#5d6b7a;--line:#d9dee5;--acc:#0b6e99;--red:#d62728;--blue:#1f4fd8;--mag:#b5179e}
 @media (prefers-color-scheme:dark){:root{--bg:#10151b;--card:#18202a;--ink:#e6ebf0;--mut:#9aa8b7;--line:#2c3947;--acc:#4cb5e0;--red:#ff6b6b;--blue:#6f9bff;--mag:#f06ad8}}
@@ -32,16 +38,22 @@ svg text{fill:var(--ink);font-size:13px}svg .sub{fill:var(--mut);font-size:12px}
 .flow{stroke-width:4;fill:none;stroke:var(--line)}.flow.on{stroke:var(--acc);stroke-dasharray:10 7;animation:run .7s linear infinite}
 @keyframes run{to{stroke-dashoffset:-17}}
 @media (prefers-reduced-motion:reduce){.flow.on{animation:none}}
+a{color:var(--acc)}.by{color:var(--ink);font-weight:600}.by a{font-weight:400;margin-left:10px;white-space:nowrap}
+.status{margin:6px 0 0}.status b{font-size:17px;margin-right:10px}.status span{color:var(--mut)}
+#chart{cursor:pointer;margin-top:10px;touch-action:pan-y}
+@media(max-width:600px){svg text{font-size:26px}svg .sub{font-size:22px}}
 </style>
 </head>
 <body>
 <main>
 <h1>Standalone (islanded) microgrid</h1>
 <p>Cost-optimal management of solar generation, a battery and a fuel generator under uncertain weather and demand.</p>
+<p class="by">Paul Honore Takam · Nathalie Fruiba <a href="https://arxiv.org/abs/2511.00167" target="_blank" rel="noopener">Preprint: arXiv:2511.00167</a></p>
 <div class="tags"><span>Islanded: no connection to the power grid</span><span>Fuel tank filled once, at the beginning</span><span>No refuelling during the week</span></div>
 
 <section>
   <h2>Live simulation of one week</h2>
+  <p>Drag the slider or tap the chart to jump to any hour.</p>
   <div class="row">
     <label>Weather<select id="weather"></select></label>
     <label>Fuel filled at the start (only once)<select id="fill"></select></label>
@@ -52,17 +64,17 @@ svg text{fill:var(--ink);font-size:13px}svg .sub{fill:var(--mut);font-size:12px}
   <input type="range" id="time" min="0" max="168" value="0" aria-label="Hour">
   <svg viewBox="0 0 960 300" role="img" aria-label="Energy flows of the microgrid">
     <path class="flow" id="fPv" d="M170 70 H395"/><path class="flow" id="fCh" d="M440 105 V190"/>
-    <path class="flow" id="fBat" d="M485 195 V150 H640 V105"/><path class="flow" id="fGen" d="M770 215 H720 V80 H690"/>
+    <path class="flow" id="fBat" d="M485 195 V150 H640 V105"/><path class="flow" id="fGen" d="M730 215 H710 V80 H690"/>
     <path class="flow" id="fUse" d="M485 70 H590"/>
     <g transform="translate(40,35)"><path d="M10 60 L30 10 H130 L110 60 Z" fill="#274c77"/><path d="M50 10 L30 60 M90 10 L70 60 M20 35 H120" stroke="#9bc1ff" fill="none"/><text x="70" y="82" text-anchor="middle">Solar panels</text></g>
     <g><circle cx="440" cy="70" r="40" fill="var(--card)" stroke="var(--acc)" stroke-width="3"/><text x="440" y="75" text-anchor="middle">bus</text></g>
     <g transform="translate(590,30)"><path d="M0 40 L50 0 L100 40 V75 H0 Z" fill="#c9773f"/><rect x="40" y="45" width="20" height="30" fill="#fff"/><text x="50" y="-8" text-anchor="middle">Household</text></g>
     <g transform="translate(390,192)"><rect width="150" height="62" rx="6" fill="none" stroke="var(--ink)" stroke-width="2"/><rect x="150" y="20" width="8" height="22" fill="var(--ink)"/><rect id="batFill" x="4" y="4" height="54" width="0" fill="var(--blue)" opacity=".65"/><text x="75" y="82" text-anchor="middle">Battery <tspan id="batTxt"></tspan></text></g>
-    <g transform="translate(770,180)"><rect width="76" height="62" rx="8" fill="#6b7280"/><circle cx="38" cy="31" r="17" fill="none" stroke="#fff" stroke-width="3"/><text x="38" y="36" text-anchor="middle" style="fill:#fff">G</text><text x="38" y="82" text-anchor="middle">Generator</text></g>
-    <g transform="translate(870,120)"><rect width="56" height="122" rx="8" fill="none" stroke="var(--ink)" stroke-width="2"/><rect id="tankFill" x="4" width="48" fill="var(--mag)" opacity=".65"/><text x="28" y="142" text-anchor="middle">Fuel tank</text><text class="sub" x="28" y="160" text-anchor="middle">filled once</text></g>
+    <g transform="translate(730,180)"><rect width="76" height="62" rx="8" fill="#6b7280"/><circle cx="38" cy="31" r="17" fill="none" stroke="#fff" stroke-width="3"/><text x="38" y="36" text-anchor="middle" style="fill:#fff">G</text><text x="38" y="82" text-anchor="middle">Generator</text></g>
+    <g transform="translate(870,120)"><rect width="56" height="122" rx="8" fill="none" stroke="var(--ink)" stroke-width="2"/><rect id="tankFill" x="4" width="48" fill="var(--mag)" opacity=".65"/><text x="28" y="142" text-anchor="middle">Fuel tank</text><text class="sub" x="28" y="166" text-anchor="middle">filled once</text></g>
     <g transform="translate(820,25)" opacity=".55"><path d="M20 70 L40 5 L60 70 M27 48 H53 M32 30 H48 M15 18 H65" stroke="var(--ink)" fill="none" stroke-width="2"/><path d="M5 5 L75 70 M75 5 L5 70" stroke="var(--red)" stroke-width="4"/><text class="sub" x="40" y="88" text-anchor="middle">no power grid</text></g>
-    <text id="status" x="40" y="235" style="font-size:17px;font-weight:700"></text><text id="status2" class="sub" x="40" y="258"></text>
   </svg>
+  <div class="status"><b id="status"></b><span id="status2"></span></div>
   <div class="kpis">
     <div class="kpi"><small>Hour</small><b id="kHour"></b></div>
     <div class="kpi"><small>Residual demand</small><b id="kR"></b></div>
@@ -70,7 +82,7 @@ svg text{fill:var(--ink);font-size:13px}svg .sub{fill:var(--mut);font-size:12px}
     <div class="kpi"><small>Discounted cost so far</small><b id="kCost"></b></div>
     <div class="kpi"><small>Unserved energy</small><b id="kEu"></b></div>
   </div>
-  <canvas id="chart" height="330"></canvas>
+  <canvas id="chart" height="430" aria-label="Battery charge, fuel level and residual demand over the week"></canvas>
   <div class="legend" id="legend"></div>
 </section>
 
@@ -86,6 +98,7 @@ svg text{fill:var(--ink);font-size:13px}svg .sub{fill:var(--mut);font-size:12px}
   <label style="flex-direction:row;gap:6px;align-items:center"><input type="checkbox" id="follow" checked> follow the simulation</label></div>
   <p id="mapInfo">Move the pointer over a map.</p>
   <div class="maps"><div><canvas id="mapU" height="300"></canvas></div><div><canvas id="mapV" height="300"></canvas></div></div>
+  <div class="legend" id="legend2"></div>
 </section>
 
 <section>
@@ -120,25 +133,32 @@ function setup(c){
 }
 
 function drawChart(){
-  const [x,w,h] = setup($("chart")), o = run(), L = 38, R = 38, T = 18, B = 34, pw = w-L-R, ph = h-T-B;
-  const X = n => L + pw*n/(N-1), Yq = v => T + ph*(1-v), Yr = v => T + ph*(1-(v+3.5)/7);
-  for (let n = 0; n < t; n++){ x.globalAlpha = .28; x.fillStyle = COL[o.A[n]+2]; x.fillRect(X(n), T, X(n+1)-X(n)+.5, ph); }
-  x.globalAlpha = 1; x.strokeStyle = css("--line"); x.strokeRect(L,T,pw,ph);
+  const [x,w,h] = setup($("chart")), o = run(), L = 52, R = 22, pw = w-L-R, T = 8, h1 = 175, T2 = T+h1+22, h2 = h-T2-36;
+  const lim = Math.max(3, Math.ceil(Math.max(...o.R.map(Math.abs))));
+  const X = n => L + pw*n/(N-1), Yq = v => T + h1*(1-v), Yr = v => T2 + h2*(lim-v)/(2*lim);
+  for (let n = 0; n < t; n++){ x.globalAlpha = .28; x.fillStyle = COL[o.A[n]+2];
+    x.fillRect(X(n), T, X(n+1)-X(n)+.5, h1); x.fillRect(X(n), T2, X(n+1)-X(n)+.5, h2); }
+  x.globalAlpha = 1; x.strokeStyle = css("--line"); x.strokeRect(L,T,pw,h1); x.strokeRect(L,T2,pw,h2);
   x.fillStyle = css("--mut"); x.textAlign = "center";
-  for (let d = 0; d <= 7; d++){ x.fillText(d*24+" h", X(d*24), h-18); }
-  x.fillText("time", L+pw/2, h-3);
-  x.textAlign = "right"; [0,.5,1].forEach(v => x.fillText(v*100+"%", L-4, Yq(v)+4));
-  x.textAlign = "left"; [-3,0,3].forEach(v => x.fillText(v+" kW", L+pw+3, Yr(v)+4));
+  (pw < 420 ? [0,2,4,7] : [0,1,2,3,4,5,6,7]).forEach(d => x.fillText(d*24, X(d*24), h-20));
+  x.fillText("Time [hours]", L+pw/2, h-4);
+  x.textAlign = "right"; [0,.5,1].forEach(v => x.fillText(v*100+"%", L-5, Yq(v)+(v===1?9:v===0?0:4)));
+  [-lim,0,lim].forEach(v => x.fillText(String(v).replace("-","−"), L-5, Yr(v)+(v===lim?9:v===-lim?0:4)));
+  x.textAlign = "center";
+  [["Battery and fuel",T+h1/2],["Residual demand [kW]",T2+h2/2]].forEach(([s,y]) => { x.save(); x.translate(12,y); x.rotate(-Math.PI/2); x.fillText(s,0,0); x.restore(); });
   x.setLineDash([4,4]); x.strokeStyle = css("--mut"); x.beginPath(); x.moveTo(L,Yr(0)); x.lineTo(L+pw,Yr(0)); x.stroke(); x.setLineDash([]);
-  [[o.R,Yr,"--red",1.2,[]],[o.Q,Yq,"--blue",2.4,[]],[o.G,Yq,"--mag",2.4,[7,4]]].forEach(([y,f,c,lw,dash]) => {
+  [[o.R,Yr,"--red",1.4,[]],[o.Q,Yq,"--blue",2.4,[]],[o.G,Yq,"--mag",2.4,[7,4]]].forEach(([y,f,c,lw,dash]) => {
     x.strokeStyle = css(c); x.lineWidth = lw; x.setLineDash(dash); x.beginPath();
-    for (let n = 0; n <= t; n++){ const p = Math.max(-3.5, y[n]); n ? x.lineTo(X(n), f(p)) : x.moveTo(X(n), f(p)); }
+    for (let n = 0; n <= t; n++) n ? x.lineTo(X(n), f(y[n])) : x.moveTo(X(n), f(y[n]));
     x.stroke();
   });
-  x.setLineDash([]); x.lineWidth = 1; x.strokeStyle = css("--ink"); x.beginPath(); x.moveTo(X(t),T); x.lineTo(X(t),T+ph); x.stroke();
+  x.setLineDash([]); x.lineWidth = 1; x.strokeStyle = css("--ink"); x.beginPath(); x.moveTo(X(t),T); x.lineTo(X(t),T2+h2); x.stroke();
+  $("chart").onclick = e => { const px = e.clientX - $("chart").getBoundingClientRect().left;
+    stop(); t = Math.max(0, Math.min(N-1, Math.round((px-L)/pw*(N-1)))); render(); };
 }
-$("legend").innerHTML = [["--blue","battery charge"],["--mag","fuel level"],["--red","residual demand (demand minus solar)"]].map(([c,s]) => `<span><i style="background:var(${c});height:3px;vertical-align:3px"></i>${s}</span>`).join("")
-  + NAMES.map((s,i) => `<span><i style="background:${COL[i]}"></i>${s}</span>`).join("");
+const actionKeys = NAMES.map((s,i) => `<span><i style="background:${COL[i]}"></i>${s}</span>`).join("");
+$("legend").innerHTML = [["--blue","battery charge"],["--mag","fuel level"],["--red","residual demand (demand − generation)"]].map(([c,s]) => `<span><i style="background:var(${c});height:3px;vertical-align:3px"></i>${s}</span>`).join("") + actionKeys;
+$("legend2").innerHTML = actionKeys;
 
 function drawScheme(){
   const o = run(), n = Math.min(t, N-2), a = o.A[n], r = o.R[n], q = o.Q[t], g = o.G[t];
@@ -165,7 +185,7 @@ function heat(c, color, title){
   for (let i = 0; i < Mr; i++) for (let j = 0; j < Mq; j++){ x.fillStyle = color(i,j); x.fillRect(L+i*cw, T+(Mq-1-j)*ch, cw+.6, ch+.6); }
   x.fillStyle = css("--ink"); x.textAlign = "center"; x.fillText(title, L+pw/2, 14);
   x.fillStyle = css("--mut"); const rx = v => L + cw*(0.5 + (v-D.r[0])/(D.r[1]-D.r[0]));
-  [-3,-2,-1,0,1,2,3].forEach(v => x.fillText(v, rx(v), h-18)); x.fillText("residual demand r (kW)", L+pw/2, h-3);
+  [-3,-2,-1,0,1,2,3].forEach(v => x.fillText(String(v).replace("-","−"), rx(v), h-18)); x.fillText("residual demand r (kW)", L+pw/2, h-3);
   x.textAlign = "right"; [0,.5,1].forEach(v => x.fillText(v*100+"%", L-4, T+ph-ch/2-v*(ph-ch)+4));
   if ($("follow").checked){ const o = run(); const px = rx(Math.min(D.r[Mr-1], Math.max(D.r[0], o.R[t]))), py = T+ph-ch/2-o.Q[t]*(ph-ch);
     x.beginPath(); x.arc(px,py,7,0,7); x.fillStyle = "#fff"; x.fill(); x.lineWidth = 3; x.strokeStyle = "#000"; x.stroke(); }
@@ -199,6 +219,7 @@ $("follow").onchange = drawMaps;
 addEventListener("resize", render);
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", render);
 drawCompare(); render();
+if (!matchMedia("(prefers-reduced-motion: reduce)").matches) play();
 </script>
 </body>
 </html>
