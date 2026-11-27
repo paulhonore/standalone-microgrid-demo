@@ -1,4 +1,4 @@
-# Standalone microgrid: live demo
+# Standalone microgrid: one fuel tank, no refilling
 
 **Live demo: https://paulhonore.github.io/standalone-microgrid-demo/**
 
